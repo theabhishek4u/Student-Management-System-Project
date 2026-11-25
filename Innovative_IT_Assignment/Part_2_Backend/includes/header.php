@@ -14,7 +14,7 @@ $flash = get_flash();
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><?= e($pageTitle) ?> | Smart Student Management System</title>
-  <link rel="icon" href="data:,">
+  <link rel="icon" type="image/svg+xml" href="<?= e(url('assets/images/logo.svg')) ?>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
@@ -32,12 +32,19 @@ $flash = get_flash();
           <button class="btn btn-outline-secondary btn-sm d-lg-none" id="sidebarToggleBtn" type="button" aria-label="Toggle navigation">
             <i class="bi bi-list fs-5"></i>
           </button>
-          <div>
+          <div class="d-flex align-items-center gap-2">
+            <span class="text-muted small d-none d-sm-inline">Smart SMS</span>
+            <span class="text-muted small d-none d-sm-inline">/</span>
             <h1 class="topbar-title mb-0"><?= e($pageTitle) ?></h1>
-            <small class="text-muted">Administrator Portal &middot; PHP &amp; MySQL CRUD</small>
           </div>
         </div>
         <div class="d-flex align-items-center gap-2">
+          <span class="topbar-status-pill d-none d-md-inline-flex">
+            <span class="status-dot"></span>MySQL PDO
+          </span>
+          <a href="<?= e(url('students/index.php')) ?>" class="btn btn-outline-secondary btn-sm d-none d-sm-inline-flex">
+            All Students
+          </a>
           <a href="<?= e(url('students/add.php')) ?>" class="btn btn-primary btn-sm">
             <i class="bi bi-plus-lg me-1"></i>Add Student
           </a>

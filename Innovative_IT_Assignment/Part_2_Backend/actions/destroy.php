@@ -37,6 +37,7 @@ try {
 
     // Remove associated uploaded photo from disk
     delete_student_photo($student['profile_photo']);
+    log_activity($pdo, 'DELETE', 'Deleted student record: ' . $student['full_name']);
 
     set_flash('success', 'Student "' . $student['full_name'] . '" and associated files deleted successfully.');
     redirect('students/index.php');

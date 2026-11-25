@@ -31,7 +31,7 @@ INSERT INTO `students`
 VALUES
   ('Aarav Sharma', 'BCA2025001', 'aarav.sharma@student.example.edu', '+91 98000 10101', 'Male', 'BCA', '2004-05-14', '14 MG Road, Bengaluru, Karnataka', NULL),
   ('Priya Nair', 'MCA2025002', 'priya.nair@student.example.edu', '+91 98000 10102', 'Female', 'MCA', '2002-09-21', '22 Marine Drive, Kochi, Kerala', NULL),
-  ('Rohan Verma', 'BT2025003', 'rohan.verma@student.example.edu', '+91 98000 10103', 'Male', 'B.Tech', '2004-01-10', '88 Civil Lines, Jaipur, Rajasthan', NULL),
+  ('Sonu Verma', 'BT2025003', 'sonu.verma@student.example.edu', '+91 98000 10103', 'Male', 'B.Tech', '2004-01-10', '88 Civil Lines, Jaipur, Rajasthan', NULL),
   ('Ananya Iyer', 'BBA2025004', 'ananya.iyer@student.example.edu', '+91 98000 10104', 'Female', 'BBA', '2005-03-19', '9 Adyar Main Road, Chennai, Tamil Nadu', NULL),
   ('Kabir Malhotra', 'MBA2025005', 'kabir.malhotra@student.example.edu', '+91 98000 10105', 'Male', 'MBA', '2001-11-05', '45 Sector 17, Chandigarh', NULL),
   ('Sneha Kulkarni', 'BCA2025006', 'sneha.kulkarni@student.example.edu', '+91 98000 10106', 'Female', 'BCA', '2004-07-28', '102 FC Road, Pune, Maharashtra', NULL),
@@ -41,3 +41,14 @@ VALUES
   ('Ishita Banerjee', 'MBA2025010', 'ishita.banerjee@student.example.edu', '+91 98000 10110', 'Female', 'MBA', '2001-08-24', '72 Park Street, Kolkata, West Bengal', NULL),
   ('Siddharth Rao', 'BT2025011', 'siddharth.rao@student.example.edu', '+91 98000 10111', 'Male', 'B.Tech', '2004-06-11', '19 Banjara Hills, Hyderabad, Telangana', NULL),
   ('Diya Chatterjee', 'BCA2025012', 'diya.chatterjee@student.example.edu', '+91 98000 10112', 'Female', 'BCA', '2004-10-30', '64 Salt Lake Sector V, Kolkata, West Bengal', NULL);
+
+CREATE TABLE IF NOT EXISTS `activity_logs` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `action` VARCHAR(40) NOT NULL,
+  `description` VARCHAR(255) NOT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `activity_logs` (`action`, `description`) VALUES
+  ('SYSTEM', 'Initialized student_management_db with 12 sample student records.');

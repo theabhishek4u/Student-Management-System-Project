@@ -5,9 +5,7 @@
 ?>
 <aside class="sidebar" id="appSidebar">
   <div class="sidebar-brand">
-    <div class="sidebar-logo">
-      <i class="bi bi-mortarboard-fill"></i>
-    </div>
+    <img src="<?= e(url('assets/images/logo.svg')) ?>" alt="Smart SMS Logo" width="34" height="34" class="rounded-2 flex-shrink-0">
     <div>
       <div class="fw-bold text-white lh-sm">Smart SMS</div>
       <small class="text-white-50">Admin Dashboard</small>

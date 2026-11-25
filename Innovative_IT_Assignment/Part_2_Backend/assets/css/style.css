@@ -137,10 +137,10 @@ code {
 }
 
 .topbar {
-  background: rgba(250, 250, 250, 0.92);
-  backdrop-filter: blur(8px);
+  background: rgba(250, 250, 250, 0.88);
+  backdrop-filter: saturate(180%) blur(12px);
   border-bottom: 1px solid var(--hairline);
-  padding: 14px 24px;
+  padding: 12px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -151,10 +151,30 @@ code {
 }
 
 .topbar-title {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
-  letter-spacing: -0.4px;
+  letter-spacing: -0.32px;
   color: var(--ink);
+}
+
+.topbar-status-pill {
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--body);
+  background: var(--canvas-elevated);
+  border: 1px solid var(--hairline);
+  padding: 4px 10px;
+  border-radius: 9999px;
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 9999px;
+  background: var(--link);
+  display: inline-block;
 }
 
 .content-area {
@@ -165,14 +185,25 @@ code {
 .app-footer {
   background: var(--canvas);
   border-top: 1px solid var(--hairline);
-  padding: 14px 24px;
+  padding: 16px 24px;
   font-size: 13px;
   color: var(--mute);
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
+}
+
+.footer-nav-link {
+  color: var(--mute);
+  text-decoration: none;
+  font-size: 13px;
+  transition: color 0.15s ease;
+}
+
+.footer-nav-link:hover {
+  color: var(--ink);
 }
 
 /* Geist Buttons & Cards Overrides */

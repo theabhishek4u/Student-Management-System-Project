@@ -57,6 +57,7 @@ try {
         ':profile_photo' => $uploadedPhoto,
     ]);
 
+    log_activity($pdo, 'REGISTER', 'Registered ' . $cleanData['full_name'] . ' (' . $cleanData['roll_number'] . ') in ' . $cleanData['course']);
     set_flash('success', 'Student "' . $cleanData['full_name'] . '" registered successfully.');
     redirect('students/index.php');
 } catch (PDOException $e) {

@@ -1,10 +1,14 @@
 /**
- * Smart Student Directory - Frontend AJAX & Live Search
- * Uses jQuery AJAX ($.ajax / $.getJSON) to load students.json
- * and provides debounced live search, course filtering, and highlighting.
+ * Smart Student Directory - Frontend AJAX, Registration & Activity Log
+ * Uses jQuery AJAX ($.ajax / $.getJSON) to load students.json,
+ * supports live search, course filtering, student registration, and an activity log.
  */
 $(document).ready(function () {
+  var STORAGE_STUDENTS_KEY = "ssd_registered_students_v1";
+  var STORAGE_LOG_KEY = "ssd_activity_log_v1";
+
   var allStudents = [];
+  var activityLogs = [];
   var currentView = "cards";
   var searchTimer = null;
 
@@ -20,8 +24,8 @@ $(document).ready(function () {
   var $emptyState = $("#emptyState");
   var $resultsSummary = $("#resultsSummary");
   var $dataStatusBadge = $("#dataStatusBadge");
+  var $activityLogList = $("#activityLogList");
 
-  // Escape HTML to prevent XSS when rendering JSON fields
   function escapeHtml(value) {
     return String(value)
       .replace(/&/g, "&amp;")
@@ -31,12 +35,10 @@ $(document).ready(function () {
       .replace(/'/g, "&#39;");
   }
 
-  // Escape RegExp special characters for safe search highlighting
   function escapeRegExp(text) {
     return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   }
 
-  // Highlight matched search term inside escaped text
   function highlightText(text, query) {
     var safeText = escapeHtml(text);
     if (!query) {
@@ -46,7 +48,106 @@ $(document).ready(function () {
     return safeText.replace(regex, '<mark class="search-highlight">$1</mark>');
   }
 
-  // Determine JSON source (supports ?simulate_error=1 for TC-10 error testing)
+  function setStatusBadge(text, isError) {
+    var $textEl = $dataStatusBadge.find(".status-text");
+    if ($textEl.length) {
+      $textEl.text(text);
+    } else {
+      $dataStatusBadge.text(text);
+    }
+    $dataStatusBadge.toggleClass("is-error", Boolean(isError));
+  }
+
+  // Activity Log Helpers
+  function loadLogsFromStorage() {
+    try {
+      var raw = localStorage.getItem(STORAGE_LOG_KEY);
+      activityLogs = raw ? JSON.parse(raw) : [];
+      if (!Array.isArray(activityLogs)) activityLogs = [];
+    } catch (e) {
+      activityLogs = [];
+    }
+  }
+
+  function saveLogsToStorage() {
+    try {
+      localStorage.setItem(STORAGE_LOG_KEY, JSON.stringify(activityLogs.slice(0, 50)));
+    } catch (e) {
+      // Ignore storage quota errors
+    }
+  }
+
+  function addActivityLog(action, message) {
+    var now = new Date();
+    var timeStr = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+    activityLogs.unshift({
+      action: action,
+      message: message,
+      time: timeStr
+    });
+    if (activityLogs.length > 50) {
+      activityLogs = activityLogs.slice(0, 50);
+    }
+    saveLogsToStorage();
+    renderActivityLogs();
+  }
+
+  function renderActivityLogs() {
+    $activityLogList.empty();
+    if (activityLogs.length === 0) {
+      $activityLogList.append('<li class="log-empty">No activity recorded yet. Search, filter, or register a student.</li>');
+      return;
+    }
+    $.each(activityLogs, function (_, item) {
+      var tagClass = "log-tag";
+      if (item.action === "REGISTER") tagClass += " log-tag-register";
+      if (item.action === "ERROR") tagClass += " log-tag-error";
+
+      var li =
+        '<li class="log-item">' +
+          '<div class="log-item-left">' +
+            '<span class="' + tagClass + '">' + escapeHtml(item.action) + '</span>' +
+            '<span class="log-message">' + escapeHtml(item.message) + '</span>' +
+          '</div>' +
+          '<span class="log-time">' + escapeHtml(item.time) + '</span>' +
+        '</li>';
+      $activityLogList.append(li);
+    });
+  }
+
+  // LocalStorage Registered Students Helpers
+  function getCustomStudents() {
+    try {
+      var raw = localStorage.getItem(STORAGE_STUDENTS_KEY);
+      var parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveCustomStudent(student) {
+    var existing = getCustomStudents();
+    existing.unshift(student);
+    try {
+      localStorage.setItem(STORAGE_STUDENTS_KEY, JSON.stringify(existing));
+    } catch (e) {
+      // Ignore storage errors
+    }
+  }
+
+  function generateAvatarDataUri(name) {
+    var parts = $.trim(name).split(/\s+/);
+    var initials = ((parts[0] ? parts[0][0] : "S") + (parts[1] ? parts[1][0] : "")).toUpperCase();
+    var svg =
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">' +
+        '<rect width="120" height="120" rx="60" fill="#171717"/>' +
+        '<text x="50%" y="53%" dominant-baseline="middle" text-anchor="middle" fill="#ffffff" ' +
+        'font-family="Geist,Arial,sans-serif" font-size="42" font-weight="600">' + escapeHtml(initials) + '</text>' +
+      '</svg>';
+    return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
+  }
+
   function getDataSourceUrl() {
     var params = new URLSearchParams(window.location.search);
     if (params.get("simulate_error") === "1") {
@@ -55,7 +156,6 @@ $(document).ready(function () {
     return "students.json";
   }
 
-  // Load students asynchronously using jQuery $.ajax()
   function loadStudents() {
     var url = getDataSourceUrl();
 
@@ -77,12 +177,14 @@ $(document).ready(function () {
           showErrorState("Invalid JSON structure: expected an array of students.");
           return;
         }
-        allStudents = data;
-        $dataStatusBadge.text("AJAX Loaded (" + allStudents.length + ")").removeClass("is-error");
+        var customStudents = getCustomStudents();
+        allStudents = customStudents.concat(data);
+        setStatusBadge("AJAX Loaded (" + allStudents.length + ")", false);
         populateCourseFilter(allStudents);
         updateDashboardStats(allStudents, allStudents);
         renderRecentStudents(allStudents);
         applyFilters();
+        addActivityLog("AJAX LOAD", "Loaded " + data.length + " records from students.json" + (customStudents.length ? " + " + customStudents.length + " registered" : "") + ".");
       },
       error: function (xhr, status, err) {
         var msg = "Failed to load " + url + " (Status: " + (xhr.status || status) + ").";
@@ -90,6 +192,7 @@ $(document).ready(function () {
           msg += " " + err;
         }
         showErrorState(msg);
+        addActivityLog("ERROR", msg);
       },
       complete: function () {
         $loadingState.prop("hidden", true);
@@ -98,7 +201,7 @@ $(document).ready(function () {
   }
 
   function showErrorState(message) {
-    $dataStatusBadge.text("Load Error").addClass("is-error");
+    setStatusBadge("Load Error", true);
     $("#errorMessage").text(message);
     $errorState.prop("hidden", false);
     $emptyState.prop("hidden", true);
@@ -107,7 +210,6 @@ $(document).ready(function () {
     $resultsSummary.text("Unable to display student records.");
   }
 
-  // Populate course dropdown dynamically from loaded JSON
   function populateCourseFilter(students) {
     var courses = [];
     $.each(students, function (_, student) {
@@ -117,15 +219,16 @@ $(document).ready(function () {
     });
     courses.sort();
 
+    var currentVal = $courseFilter.val();
     $courseFilter.find("option:not(:first)").remove();
     $.each(courses, function (_, course) {
-      $courseFilter.append(
-        $("<option></option>").val(course).text(course)
-      );
+      $courseFilter.append($("<option></option>").val(course).text(course));
     });
+    if (currentVal && courses.indexOf(currentVal) !== -1) {
+      $courseFilter.val(currentVal);
+    }
   }
 
-  // Update top dashboard statistics dynamically
   function updateDashboardStats(students, filtered) {
     var uniqueCourses = [];
     var latestDate = "";
@@ -145,7 +248,6 @@ $(document).ready(function () {
     $("#statLatestEnrollment").text(latestDate || "N/A");
   }
 
-  // Render top 3 recently enrolled students
   function renderRecentStudents(students) {
     var sorted = students.slice().sort(function (a, b) {
       return (b.enrollment_date || "").localeCompare(a.enrollment_date || "");
@@ -167,7 +269,6 @@ $(document).ready(function () {
     });
   }
 
-  // Filter students by search query (name, roll_number, course) and course dropdown
   function applyFilters() {
     var rawQuery = $.trim($searchInput.val());
     var query = rawQuery.toLowerCase();
@@ -237,7 +338,7 @@ $(document).ready(function () {
           '</div>' +
           '<div class="student-card-footer">' +
             '<span class="student-roll">Enrolled ' + escapeHtml(student.enrollment_date) + '</span>' +
-            '<button type="button" class="btn btn-outline btn-sm view-details-btn" data-id="' + escapeHtml(student.id) + '">View Details</button>' +
+            '<button type="button" class="btn btn-sm view-details-btn" data-id="' + escapeHtml(student.id) + '">View Details</button>' +
           '</div>' +
         '</article>';
       $cardsContainer.append(cardHtml);
@@ -253,7 +354,7 @@ $(document).ready(function () {
           '<td>' + escapeHtml(student.email) + '</td>' +
           '<td>' + escapeHtml(student.phone) + '</td>' +
           '<td>' + escapeHtml(student.enrollment_date) + '</td>' +
-          '<td><button type="button" class="btn btn-outline btn-sm view-details-btn" data-id="' + escapeHtml(student.id) + '">View</button></td>' +
+          '<td><button type="button" class="btn btn-sm view-details-btn" data-id="' + escapeHtml(student.id) + '">View</button></td>' +
         '</tr>';
       $tableBody.append(rowHtml);
     });
@@ -275,7 +376,7 @@ $(document).ready(function () {
       '<div class="modal-profile-top">' +
         '<img src="' + escapeHtml(student.profile_image) + '" alt="' + escapeHtml(student.name) + '">' +
         '<div>' +
-          '<h4 id="modalStudentName" style="margin:0 0 4px;font-size:1.2rem;">' + escapeHtml(student.name) + '</h4>' +
+          '<h4 id="modalStudentName" style="margin:0 0 6px;font-size:18px;font-weight:600;">' + escapeHtml(student.name) + '</h4>' +
           '<span class="course-pill">' + escapeHtml(student.course) + '</span>' +
         '</div>' +
       '</div>' +
@@ -290,26 +391,146 @@ $(document).ready(function () {
 
     $("#modalBody").html(modalHtml);
     $("#studentModal").prop("hidden", false);
+    addActivityLog("VIEW", "Viewed profile of " + student.name + " (" + student.roll_number + ").");
   }
 
   function closeStudentModal() {
     $("#studentModal").prop("hidden", true);
   }
 
+  // Registration Modal Logic
+  function openRegisterModal() {
+    $("#registerStudentForm")[0].reset();
+    $(".field-error").text("");
+    $(".form-input").removeClass("is-invalid");
+    $("#registerFormAlert").prop("hidden", true).text("");
+    var today = new Date().toISOString().slice(0, 10);
+    $("#regDate").val(today);
+    $("#registerModal").prop("hidden", false);
+    $("#regName").focus();
+  }
+
+  function closeRegisterModal() {
+    $("#registerModal").prop("hidden", true);
+  }
+
+  $("#registerStudentForm").on("submit", function (e) {
+    e.preventDefault();
+    $(".field-error").text("");
+    $(".form-input").removeClass("is-invalid");
+    $("#registerFormAlert").prop("hidden", true);
+
+    var name = $.trim($("#regName").val());
+    var roll = $.trim($("#regRoll").val()).toUpperCase();
+    var email = $.trim($("#regEmail").val());
+    var phone = $.trim($("#regPhone").val());
+    var course = $("#regCourse").val();
+    var enrollDate = $("#regDate").val();
+
+    var hasError = false;
+
+    if (name.length < 2) {
+      $("#errRegName").text("Full name must be at least 2 characters.");
+      $("#regName").addClass("is-invalid");
+      hasError = true;
+    }
+
+    if (!/^[A-Z0-9_-]{2,30}$/.test(roll)) {
+      $("#errRegRoll").text("Use 2-30 alphanumeric characters, hyphens, or underscores.");
+      $("#regRoll").addClass("is-invalid");
+      hasError = true;
+    } else {
+      var duplicate = $.grep(allStudents, function (s) {
+        return (s.roll_number || "").toUpperCase() === roll;
+      });
+      if (duplicate.length > 0) {
+        $("#errRegRoll").text("This roll number is already registered.");
+        $("#regRoll").addClass("is-invalid");
+        hasError = true;
+      }
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      $("#errRegEmail").text("Please enter a valid email address.");
+      $("#regEmail").addClass("is-invalid");
+      hasError = true;
+    }
+
+    var digits = phone.replace(/\D/g, "");
+    if (digits.length < 7 || digits.length > 15) {
+      $("#errRegPhone").text("Enter a valid phone number (7-15 digits).");
+      $("#regPhone").addClass("is-invalid");
+      hasError = true;
+    }
+
+    if (!course) {
+      $("#errRegCourse").text("Please select a course.");
+      $("#regCourse").addClass("is-invalid");
+      hasError = true;
+    }
+
+    if (!enrollDate) {
+      $("#errRegDate").text("Enrollment date is required.");
+      $("#regDate").addClass("is-invalid");
+      hasError = true;
+    }
+
+    if (hasError) {
+      $("#registerFormAlert").text("Please fix the highlighted fields before submitting.").prop("hidden", false);
+      return;
+    }
+
+    var maxId = 0;
+    $.each(allStudents, function (_, s) {
+      if (Number(s.id) > maxId) maxId = Number(s.id);
+    });
+
+    var newStudent = {
+      id: maxId + 1,
+      name: name,
+      roll_number: roll,
+      email: email,
+      phone: phone,
+      course: course,
+      profile_image: generateAvatarDataUri(name),
+      enrollment_date: enrollDate
+    };
+
+    saveCustomStudent(newStudent);
+    allStudents.unshift(newStudent);
+    setStatusBadge("AJAX Loaded (" + allStudents.length + ")", false);
+    populateCourseFilter(allStudents);
+    renderRecentStudents(allStudents);
+    applyFilters();
+    closeRegisterModal();
+    addActivityLog("REGISTER", "Registered " + name + " (" + roll + ") in " + course + ".");
+  });
+
   function resetAllFilters() {
     $searchInput.val("");
     $courseFilter.val("all");
     applyFilters();
     $searchInput.focus();
+    addActivityLog("RESET", "Cleared search query and course filter.");
   }
 
   // Event Handlers
   $searchInput.on("input", function () {
     clearTimeout(searchTimer);
-    searchTimer = setTimeout(applyFilters, 180);
+    searchTimer = setTimeout(function () {
+      applyFilters();
+      var q = $.trim($searchInput.val());
+      if (q.length > 0) {
+        addActivityLog("SEARCH", 'Searched directory for "' + q + '".');
+      }
+    }, 180);
   });
 
-  $courseFilter.on("change", applyFilters);
+  $courseFilter.on("change", function () {
+    applyFilters();
+    var c = $courseFilter.val();
+    addActivityLog("FILTER", "Filtered course: " + (c === "all" ? "All Courses" : c) + ".");
+  });
 
   $clearSearchBtn.on("click", function () {
     $searchInput.val("");
@@ -320,16 +541,17 @@ $(document).ready(function () {
   $("#resetAllBtn, #emptyResetBtn").on("click", resetAllFilters);
 
   $("#refreshDataBtn, #retryLoadBtn").on("click", function () {
-    // Also demonstrate $.getJSON capability by resetting simulate_error if retrying
     if (window.location.search.indexOf("simulate_error=1") !== -1) {
       $.getJSON("students.json", function (data) {
-        allStudents = data;
+        var customStudents = getCustomStudents();
+        allStudents = customStudents.concat(data);
         $errorState.prop("hidden", true);
-        $dataStatusBadge.text("AJAX Loaded (" + allStudents.length + ")").removeClass("is-error");
+        setStatusBadge("AJAX Loaded (" + allStudents.length + ")", false);
         populateCourseFilter(allStudents);
         updateDashboardStats(allStudents, allStudents);
         renderRecentStudents(allStudents);
         applyFilters();
+        addActivityLog("AJAX LOAD", "Recovered via $.getJSON() (" + allStudents.length + " records).");
       }).fail(function () {
         loadStudents();
       });
@@ -351,13 +573,25 @@ $(document).ready(function () {
 
   $("#closeModalBtn, #closeModalFooterBtn").on("click", closeStudentModal);
   $("#studentModal").on("click", function (e) {
-    if (e.target === this) {
-      closeStudentModal();
-    }
+    if (e.target === this) closeStudentModal();
   });
+
+  $("#openRegisterBtn, #heroRegisterBtn").on("click", openRegisterModal);
+  $("#closeRegisterModalBtn, #cancelRegisterBtn").on("click", closeRegisterModal);
+  $("#registerModal").on("click", function (e) {
+    if (e.target === this) closeRegisterModal();
+  });
+
+  $("#clearLogBtn").on("click", function () {
+    activityLogs = [];
+    saveLogsToStorage();
+    renderActivityLogs();
+  });
+
   $(document).on("keydown", function (e) {
     if (e.key === "Escape") {
       closeStudentModal();
+      closeRegisterModal();
     }
   });
 
@@ -366,6 +600,13 @@ $(document).ready(function () {
     $(this).attr("aria-expanded", isOpen ? "true" : "false");
   });
 
-  // Initial AJAX load
+  // Close mobile nav when clicking a link
+  $(".nav-link").on("click", function () {
+    $("#navMenu").removeClass("is-open");
+    $("#navToggle").attr("aria-expanded", "false");
+  });
+
+  loadLogsFromStorage();
+  renderActivityLogs();
   loadStudents();
 });

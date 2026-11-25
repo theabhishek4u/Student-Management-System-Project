@@ -27,6 +27,18 @@ $courseStats = $pdo->query(
      ORDER BY student_count DESC, course ASC'
 )->fetchAll();
 
+$activityLogs = [];
+try {
+    $activityLogs = $pdo->query(
+        'SELECT action, description, created_at
+         FROM activity_logs
+         ORDER BY id DESC
+         LIMIT 6'
+    )->fetchAll();
+} catch (PDOException $e) {
+    $activityLogs = [];
+}
+
 $pageTitle = 'Dashboard';
 $activePage = 'dashboard';
 include __DIR__ . '/includes/header.php';
@@ -164,7 +176,7 @@ include __DIR__ . '/includes/header.php';
       </div>
     </div>
 
-    <div class="card shadow-sm">
+    <div class="card shadow-sm mb-4">
       <div class="card-header bg-white py-3">
         <h2 class="h6 fw-bold mb-0">Quick Actions</h2>
       </div>
@@ -175,6 +187,29 @@ include __DIR__ . '/includes/header.php';
         <a href="<?= e(url('students/index.php')) ?>" class="btn btn-outline-secondary">
           <i class="bi bi-table me-1"></i>Manage Student Directory
         </a>
+      </div>
+    </div>
+
+    <div class="card shadow-sm">
+      <div class="card-header bg-white py-3">
+        <h2 class="h6 fw-bold mb-0">Activity Log</h2>
+      </div>
+      <div class="card-body p-0">
+        <?php if (empty($activityLogs)): ?>
+          <p class="text-muted small p-3 mb-0">No activity recorded yet.</p>
+        <?php else: ?>
+          <ul class="list-group list-group-flush">
+            <?php foreach ($activityLogs as $log): ?>
+              <li class="list-group-item px-3 py-2">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <span class="badge text-bg-light border text-dark"><?= e($log['action']) ?></span>
+                  <small class="text-muted"><?= e(date('d M, h:i A', strtotime($log['created_at']))) ?></small>
+                </div>
+                <div class="small text-body"><?= e($log['description']) ?></div>
+              </li>
+            <?php endforeach; ?>
+          </ul>
+        <?php endif; ?>
       </div>
     </div>
   </div>

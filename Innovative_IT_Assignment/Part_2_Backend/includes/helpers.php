@@ -236,3 +236,19 @@ function delete_student_photo(?string $filename): void
         @unlink($fullPath);
     }
 }
+
+/**
+ * Record an admin action in the activity_logs table.
+ */
+function log_activity(PDO $pdo, string $action, string $description): void
+{
+    try {
+        $stmt = $pdo->prepare('INSERT INTO activity_logs (action, description) VALUES (:action, :description)');
+        $stmt->execute([
+            ':action'      => $action,
+            ':description' => $description,
+        ]);
+    } catch (PDOException $e) {
+        // Do not block primary CRUD operation if log table is unavailable
+    }
+}

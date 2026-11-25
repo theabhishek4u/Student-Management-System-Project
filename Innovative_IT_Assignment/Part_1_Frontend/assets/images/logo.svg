@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" fill="none">
+  <defs>
+    <linearGradient id="smsAccent" x1="8" y1="8" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#007cf0"/>
+      <stop offset="100%" stop-color="#00dfd8"/>
+    </linearGradient>
+  </defs>
+  <rect width="40" height="40" rx="9" fill="#171717"/>
+  <!-- Graduation Cap Crown -->
+  <path d="M20 9L7 15.5L20 22L33 15.5L20 9Z" fill="#ffffff"/>
+  <!-- Cap Base / Open Book Arc -->
+  <path d="M12.5 19.5V25.5C12.5 27.5 15.8 29.5 20 29.5C24.2 29.5 27.5 27.5 27.5 25.5V19.5L20 23.2L12.5 19.5Z" fill="#ffffff" fill-opacity="0.86"/>
+  <!-- Tassel Accent -->
+  <path d="M30.5 17V24.5" stroke="url(#smsAccent)" stroke-width="2.2" stroke-linecap="round"/>
+  <circle cx="30.5" cy="25.5" r="1.8" fill="url(#smsAccent)"/>
+</svg>

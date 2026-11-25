@@ -6,8 +6,16 @@
       </main>
 
       <footer class="app-footer">
-        <span>Smart Student Management System &mdash; PHP &amp; MySQL (PDO)</span>
-        <span>Web Technology &amp; Server-Side Scripting</span>
+        <div class="d-flex align-items-center gap-2">
+          <span class="fw-semibold text-dark">Smart SMS</span>
+          <span>&middot;</span>
+          <span>PHP &amp; MySQL (PDO) CRUD System</span>
+        </div>
+        <div class="d-flex align-items-center gap-3">
+          <a href="<?= e(url('index.php')) ?>" class="footer-nav-link">Dashboard</a>
+          <a href="<?= e(url('students/index.php')) ?>" class="footer-nav-link">Directory</a>
+          <a href="<?= e(url('students/add.php')) ?>" class="footer-nav-link">Register</a>
+        </div>
       </footer>
     </div>
   </div>

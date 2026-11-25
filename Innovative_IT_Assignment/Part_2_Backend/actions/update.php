@@ -86,6 +86,7 @@ try {
         delete_student_photo($existing['profile_photo']);
     }
 
+    log_activity($pdo, 'UPDATE', 'Updated profile for ' . $cleanData['full_name'] . ' (' . $cleanData['roll_number'] . ')');
     set_flash('success', 'Student "' . $cleanData['full_name'] . '" updated successfully.');
     redirect('students/view.php?id=' . $id);
 } catch (PDOException $e) {

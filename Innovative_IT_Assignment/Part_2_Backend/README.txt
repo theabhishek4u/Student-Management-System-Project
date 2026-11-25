@@ -34,7 +34,8 @@ SMART STUDENT MANAGEMENT SYSTEM - PHP & MYSQL CRUD (PART 2 - BACKEND)
 
 7. FEATURES
    - Dynamic Admin Dashboard (Total Students, Active Courses, Latest
-     Registration, Course Distribution progress bars, Recently Added table).
+     Registration, Course Distribution progress bars, Recently Added table,
+     and MySQL-backed Activity Log).
    - Student Registration Form with 9 fields and live image preview.
    - Server-side validation with field-specific error messages and old-input
      preservation.

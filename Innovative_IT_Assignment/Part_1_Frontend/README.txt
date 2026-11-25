@@ -39,7 +39,14 @@ SMART STUDENT DIRECTORY - AJAX LIVE SEARCH SYSTEM (PART 1 - FRONTEND)
    - Recently Enrolled Students preview section.
    - Live debounced search by student name, roll number, or course.
    - Case-insensitive matching with highlighted search terms (<mark>).
-   - Course filter dropdown combinable with text search.
+   - Quick course category pills + course filter dropdown combinable with
+     text search.
+   - Navbar Search button (scrolls to directory and focuses search input).
+   - Student Registration modal with client-side validation, duplicate roll
+     number check, auto-generated SVG initials avatar, and localStorage
+     persistence.
+   - Real-time Activity Log (AJAX LOAD, REGISTER, SEARCH, FILTER, VIEW, RESET)
+     persisted in localStorage with Clear Log control.
    - Clear search button and Reset button.
    - Card Grid view and Table view toggle.
    - Student Profile Details modal on click.

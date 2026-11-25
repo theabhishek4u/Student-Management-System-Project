@@ -402,19 +402,26 @@ $(document).ready(function () {
 
     var modalHtml =
       '<div class="modal-profile-top">' +
-        '<img src="' + escapeHtml(student.profile_image) + '" alt="' + escapeHtml(student.name) + '">' +
-        '<div>' +
-          '<h4 id="modalStudentName" style="margin:0 0 6px;font-size:18px;font-weight:600;">' + escapeHtml(student.name) + '</h4>' +
-          '<span class="course-pill">' + escapeHtml(student.course) + '</span>' +
+        '<div class="modal-profile-identity">' +
+          '<img src="' + escapeHtml(student.profile_image) + '" alt="' + escapeHtml(student.name) + '">' +
+          '<div style="min-width:0;">' +
+            '<h4 id="modalStudentName" style="margin:0 0 6px;font-size:18px;font-weight:600;letter-spacing:-0.36px;">' + escapeHtml(student.name) + '</h4>' +
+            '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">' +
+              '<span class="course-pill">' + escapeHtml(student.course) + '</span>' +
+              '<span class="student-roll" style="margin:0;">' + escapeHtml(student.roll_number) + '</span>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="modal-cgpa-badge">' +
+          '<small>CGPA</small>' +
+          '<strong>' + escapeHtml(student.cgpa || "N/A") + '</strong>' +
         '</div>' +
       '</div>' +
       '<div class="modal-details-list">' +
         '<div class="modal-detail-item"><label>Student ID</label><span>#' + escapeHtml(student.id) + '</span></div>' +
         '<div class="modal-detail-item"><label>Roll Number</label><span>' + escapeHtml(student.roll_number) + '</span></div>' +
-        '<div class="modal-detail-item"><label>Email</label><span>' + escapeHtml(student.email) + '</span></div>' +
-        '<div class="modal-detail-item"><label>Phone</label><span>' + escapeHtml(student.phone) + '</span></div>' +
-        '<div class="modal-detail-item"><label>Course</label><span>' + escapeHtml(student.course) + '</span></div>' +
-        '<div class="modal-detail-item"><label>CGPA</label><span>' + escapeHtml(student.cgpa || "N/A") + ' / 10</span></div>' +
+        '<div class="modal-detail-item is-full"><label>Email Address</label><span>' + escapeHtml(student.email) + '</span></div>' +
+        '<div class="modal-detail-item"><label>Phone Number</label><span>' + escapeHtml(student.phone) + '</span></div>' +
         '<div class="modal-detail-item"><label>Enrollment Date</label><span>' + escapeHtml(student.enrollment_date) + '</span></div>' +
       '</div>';
 

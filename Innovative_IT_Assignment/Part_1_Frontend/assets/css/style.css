@@ -929,13 +929,19 @@ mark.search-highlight {
 
 .modal-card {
   width: 100%;
-  max-width: 520px;
+  max-width: 580px;
   max-height: 92vh;
   overflow-y: auto;
   background: var(--canvas-elevated);
   border: 1px solid var(--hairline);
   border-radius: 16px;
   box-shadow: var(--shadow-float);
+  animation: modalFadeIn 0.16s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: translateY(6px) scale(0.99); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .modal-card-lg {
@@ -1126,41 +1132,88 @@ mark.search-highlight {
 .modal-profile-top {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 16px;
-  margin-bottom: 18px;
+  padding: 16px;
+  background: var(--canvas);
+  border: 1px solid var(--hairline);
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+.modal-profile-identity {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
 }
 
 .modal-profile-top img {
-  width: 64px;
-  height: 64px;
+  width: 60px;
+  height: 60px;
   border-radius: 9999px;
   border: 1px solid var(--hairline);
+  flex-shrink: 0;
+}
+
+.modal-cgpa-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  background: var(--canvas-elevated);
+  border: 1px solid var(--hairline);
+  border-radius: 10px;
+  padding: 8px 14px;
+  flex-shrink: 0;
+}
+
+.modal-cgpa-badge small {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--mute);
+  text-transform: uppercase;
+}
+
+.modal-cgpa-badge strong {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  color: var(--ink);
+  line-height: 1.2;
 }
 
 .modal-details-list {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 14px;
+  gap: 12px;
+}
+
+.modal-detail-item {
   background: var(--canvas);
-  padding: 16px;
-  border-radius: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
   border: 1px solid var(--hairline);
+}
+
+.modal-detail-item.is-full {
+  grid-column: 1 / -1;
 }
 
 .modal-detail-item label {
   display: block;
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 10px;
   color: var(--mute);
   text-transform: uppercase;
-  margin-bottom: 2px;
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
 }
 
 .modal-detail-item span {
   font-size: 14px;
   font-weight: 500;
   color: var(--ink);
-  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 /* Footer */

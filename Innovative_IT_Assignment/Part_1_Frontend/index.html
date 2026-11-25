@@ -19,8 +19,6 @@
           <img src="assets/images/logo.svg" alt="Smart Student Directory Logo" class="brand-logo-img" width="30" height="30">
           <span class="brand-name">Smart Directory</span>
         </a>
-        <span class="nav-divider" aria-hidden="true">/</span>
-        <span class="nav-context-pill">Academic Portal</span>
       </div>
 
       <button class="nav-toggle" id="navToggle" type="button" aria-label="Toggle navigation" aria-expanded="false">
@@ -35,10 +33,6 @@
           <a href="#activity-log" class="nav-link">Activity Log</a>
         </div>
         <div class="nav-actions-group">
-          <span class="nav-badge" id="dataStatusBadge">
-            <span class="status-dot" aria-hidden="true"></span>
-            <span class="status-text">AJAX Ready</span>
-          </span>
           <button type="button" id="openRegisterBtn" class="btn-app btn-app-primary btn-sm">+ Register Student</button>
         </div>
       </nav>
@@ -120,33 +114,40 @@
         </div>
       </div>
 
-      <div class="search-panel">
-        <div class="search-input-wrap">
-          <span class="search-icon" aria-hidden="true">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="11" cy="11" r="8"/>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-            </svg>
-          </span>
-          <input
-            type="text"
-            id="searchInput"
-            class="search-input"
-            placeholder="Search by name, roll number, or course (e.g. Aarav, BCA2025001, MCA)..."
-            autocomplete="off"
-            aria-label="Search students"
-          >
-          <button type="button" id="clearSearchBtn" class="clear-btn" title="Clear search" aria-label="Clear search" hidden>
-            &times;
-          </button>
+      <div class="search-panel-wrap">
+        <div class="search-panel">
+          <div class="search-input-wrap">
+            <span class="search-icon" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+            </span>
+            <input
+              type="text"
+              id="searchInput"
+              class="search-input"
+              placeholder="Search by name, roll number, or course (e.g. Aarav, BCA2025001, MCA)..."
+              autocomplete="off"
+              aria-label="Search students"
+            >
+            <button type="button" id="clearSearchBtn" class="clear-btn" title="Clear search" aria-label="Clear search" hidden>
+              &times;
+            </button>
+          </div>
+
+          <div class="filter-controls">
+            <label for="courseFilter" class="sr-only">Filter by course</label>
+            <select id="courseFilter" class="course-select" aria-label="Filter by course">
+              <option value="all">All Courses</option>
+            </select>
+            <button type="button" id="resetAllBtn" class="btn-app btn-app-ghost">Reset</button>
+          </div>
         </div>
 
-        <div class="filter-controls">
-          <label for="courseFilter" class="sr-only">Filter by course</label>
-          <select id="courseFilter" class="course-select" aria-label="Filter by course">
-            <option value="all">All Courses</option>
-          </select>
-          <button type="button" id="resetAllBtn" class="btn-app btn-app-ghost">Reset</button>
+        <!-- Quick Course Category Pills -->
+        <div class="course-pills-bar" id="coursePillsBar" role="group" aria-label="Quick course filters">
+          <button type="button" class="category-pill active" data-course="all">All Courses</button>
         </div>
       </div>
 

@@ -1,0 +1,182 @@
+[
+  {
+    "id": 1,
+    "name": "Aarav Sharma",
+    "roll_number": "BCA2025001",
+    "email": "aarav.sharma@student.example.edu",
+    "phone": "+91 98000 10101",
+    "course": "BCA",
+    "profile_image": "assets/images/avatar-01.svg",
+    "enrollment_date": "2025-08-12"
+  },
+  {
+    "id": 2,
+    "name": "Priya Nair",
+    "roll_number": "MCA2025002",
+    "email": "priya.nair@student.example.edu",
+    "phone": "+91 98000 10102",
+    "course": "MCA",
+    "profile_image": "assets/images/avatar-02.svg",
+    "enrollment_date": "2025-08-14"
+  },
+  {
+    "id": 3,
+    "name": "Rohan Verma",
+    "roll_number": "BT2025003",
+    "email": "rohan.verma@student.example.edu",
+    "phone": "+91 98000 10103",
+    "course": "B.Tech",
+    "profile_image": "assets/images/avatar-03.svg",
+    "enrollment_date": "2025-08-15"
+  },
+  {
+    "id": 4,
+    "name": "Ananya Iyer",
+    "roll_number": "BBA2025004",
+    "email": "ananya.iyer@student.example.edu",
+    "phone": "+91 98000 10104",
+    "course": "BBA",
+    "profile_image": "assets/images/avatar-04.svg",
+    "enrollment_date": "2025-08-18"
+  },
+  {
+    "id": 5,
+    "name": "Kabir Malhotra",
+    "roll_number": "MBA2025005",
+    "email": "kabir.malhotra@student.example.edu",
+    "phone": "+91 98000 10105",
+    "course": "MBA",
+    "profile_image": "assets/images/avatar-05.svg",
+    "enrollment_date": "2025-08-20"
+  },
+  {
+    "id": 6,
+    "name": "Sneha Kulkarni",
+    "roll_number": "BCA2025006",
+    "email": "sneha.kulkarni@student.example.edu",
+    "phone": "+91 98000 10106",
+    "course": "BCA",
+    "profile_image": "assets/images/avatar-06.svg",
+    "enrollment_date": "2025-08-22"
+  },
+  {
+    "id": 7,
+    "name": "Vikramaditya Joshi",
+    "roll_number": "BT2025007",
+    "email": "vikram.joshi@student.example.edu",
+    "phone": "+91 98000 10107",
+    "course": "B.Tech",
+    "profile_image": "assets/images/avatar-07.svg",
+    "enrollment_date": "2025-08-25"
+  },
+  {
+    "id": 8,
+    "name": "Meera Krishnan",
+    "roll_number": "MCA2025008",
+    "email": "meera.krishnan@student.example.edu",
+    "phone": "+91 98000 10108",
+    "course": "MCA",
+    "profile_image": "assets/images/avatar-08.svg",
+    "enrollment_date": "2025-08-28"
+  },
+  {
+    "id": 9,
+    "name": "Aditya Deshmukh",
+    "roll_number": "BBA2025009",
+    "email": "aditya.deshmukh@student.example.edu",
+    "phone": "+91 98000 10109",
+    "course": "BBA",
+    "profile_image": "assets/images/avatar-09.svg",
+    "enrollment_date": "2025-09-01"
+  },
+  {
+    "id": 10,
+    "name": "Ishita Banerjee",
+    "roll_number": "MBA2025010",
+    "email": "ishita.banerjee@student.example.edu",
+    "phone": "+91 98000 10110",
+    "course": "MBA",
+    "profile_image": "assets/images/avatar-10.svg",
+    "enrollment_date": "2025-09-03"
+  },
+  {
+    "id": 11,
+    "name": "Siddharth Rao",
+    "roll_number": "BT2025011",
+    "email": "siddharth.rao@student.example.edu",
+    "phone": "+91 98000 10111",
+    "course": "B.Tech",
+    "profile_image": "assets/images/avatar-11.svg",
+    "enrollment_date": "2025-09-05"
+  },
+  {
+    "id": 12,
+    "name": "Diya Chatterjee",
+    "roll_number": "BCA2025012",
+    "email": "diya.chatterjee@student.example.edu",
+    "phone": "+91 98000 10112",
+    "course": "BCA",
+    "profile_image": "assets/images/avatar-12.svg",
+    "enrollment_date": "2025-09-08"
+  },
+  {
+    "id": 13,
+    "name": "Arjun Mehta",
+    "roll_number": "MCA2025013",
+    "email": "arjun.mehta@student.example.edu",
+    "phone": "+91 98000 10113",
+    "course": "MCA",
+    "profile_image": "assets/images/avatar-13.svg",
+    "enrollment_date": "2025-09-10"
+  },
+  {
+    "id": 14,
+    "name": "Kavya Menon",
+    "roll_number": "BBA2025014",
+    "email": "kavya.menon@student.example.edu",
+    "phone": "+91 98000 10114",
+    "course": "BBA",
+    "profile_image": "assets/images/avatar-14.svg",
+    "enrollment_date": "2025-09-12"
+  },
+  {
+    "id": 15,
+    "name": "Nikhil Kapoor",
+    "roll_number": "BT2025015",
+    "email": "nikhil.kapoor@student.example.edu",
+    "phone": "+91 98000 10115",
+    "course": "B.Tech",
+    "profile_image": "assets/images/avatar-15.svg",
+    "enrollment_date": "2025-09-15"
+  },
+  {
+    "id": 16,
+    "name": "Tanvi Saxena",
+    "roll_number": "MBA2025016",
+    "email": "tanvi.saxena@student.example.edu",
+    "phone": "+91 98000 10116",
+    "course": "MBA",
+    "profile_image": "assets/images/avatar-16.svg",
+    "enrollment_date": "2025-09-18"
+  },
+  {
+    "id": 17,
+    "name": "Pranav Tiwari",
+    "roll_number": "BCA2025017",
+    "email": "pranav.tiwari@student.example.edu",
+    "phone": "+91 98000 10117",
+    "course": "BCA",
+    "profile_image": "assets/images/avatar-17.svg",
+    "enrollment_date": "2025-09-21"
+  },
+  {
+    "id": 18,
+    "name": "Riya Sengupta",
+    "roll_number": "MCA2025018",
+    "email": "riya.sengupta@student.example.edu",
+    "phone": "+91 98000 10118",
+    "course": "MCA",
+    "profile_image": "assets/images/avatar-18.svg",
+    "enrollment_date": "2025-09-24"
+  }
+]

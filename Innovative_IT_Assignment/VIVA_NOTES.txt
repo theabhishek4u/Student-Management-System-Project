@@ -1,0 +1,180 @@
+================================================================================
+VIVA VOCE PREPARATION NOTES
+SMART STUDENT MANAGEMENT SUITE (PART 1 & PART 2)
+================================================================================
+
+--------------------------------------------------------------------------------
+SECTION A: CORE CONCEPTS IN SIMPLE ENGLISH
+--------------------------------------------------------------------------------
+
+1. What is AJAX?
+   AJAX stands for Asynchronous JavaScript and XML (now commonly used with
+   JSON). It allows a webpage to send and receive data from a server in the
+   background and update parts of the page without doing a full-page reload.
+   In Part 1, we use AJAX to fetch students.json when the page loads.
+
+2. What is jQuery?
+   jQuery is a lightweight, fast JavaScript library that simplifies HTML DOM
+   traversal, event handling, and AJAX calls using concise syntax like $(),
+   .on(), .html(), $.ajax(), and $.getJSON().
+
+3. What is JSON?
+   JSON (JavaScript Object Notation) is a lightweight, human-readable data
+   format made of key-value pairs and arrays. In Part 1, students.json stores
+   an array of 18 student objects with fields like id, name, roll_number,
+   email, phone, course, profile_image, and enrollment_date.
+
+4. What is DOM Manipulation?
+   The DOM (Document Object Model) is the browser's tree representation of an
+   HTML page. DOM manipulation means using JavaScript/jQuery to dynamically
+   create, update, show, hide, or remove HTML elements (such as rendering
+   student cards, table rows, statistics, and modals) without reloading.
+
+5. What is PHP?
+   PHP (Hypertext Preprocessor) is a server-side scripting language executed on
+   the web server (Apache in XAMPP). It processes form submissions, validates
+   data, interacts with the MySQL database, handles file uploads, and outputs
+   dynamic HTML to the browser.
+
+6. What is MySQL?
+   MySQL is an open-source relational database management system (RDBMS) that
+   stores structured data in tables using SQL (Structured Query Language). Our
+   database is named `student_management_db` and stores records in `students`.
+
+7. What is PDO?
+   PDO (PHP Data Objects) is a secure, object-oriented database abstraction
+   layer in PHP. It provides a consistent API for connecting to databases,
+   handling errors via exceptions, and running prepared statements.
+
+8. What are Prepared Statements?
+   Prepared statements separate SQL query structure from user-supplied data.
+   First, the database compiles the SQL template with placeholders (like :id or
+   :roll_number); then, PHP binds the values safely. This completely prevents
+   SQL Injection attacks.
+
+9. What is CRUD?
+   CRUD stands for the four basic database operations:
+   - Create: Inserting a new student (students/add.php -> actions/store.php)
+   - Read: Viewing dashboard, listing, and profile (index.php, students/index.php, view.php)
+   - Update: Editing an existing student (students/edit.php -> actions/update.php)
+   - Delete: Removing a student and photo (students/delete.php -> actions/destroy.php)
+
+10. What is Server-Side Validation?
+    Server-side validation checks user input in PHP after a form is submitted,
+    before saving to the database. Even if someone bypasses HTML5 or JavaScript
+    validation in the browser, PHP rejects invalid emails, duplicate roll
+    numbers, future dates of birth, or missing fields.
+
+11. What is File Handling?
+    File handling means creating directories, reading, writing, and deleting
+    files on the server's filesystem. In Part 2, PHP creates uploads/students/
+    if missing, writes uploaded photos there, displays them, and deletes old
+    photos when replaced or when a student is deleted.
+
+12. How Does Image Uploading Work?
+    1. The HTML form uses method="POST" and enctype="multipart/form-data".
+    2. PHP receives the temporary file in $_FILES['profile_photo'].
+    3. handle_photo_upload() checks upload errors, file size (<= 2 MB),
+       extension (jpg/jpeg/png/webp), and real MIME type using finfo_file().
+    4. It generates a random unique filename (student_<hex>.<ext>) and moves
+       the file using move_uploaded_file() into uploads/students/.
+    5. Only the safe filename is stored in MySQL.
+
+--------------------------------------------------------------------------------
+SECTION B: HOW IMPORTANT PROJECT FILES WORK
+--------------------------------------------------------------------------------
+
+PART 1 (Part_1_Frontend):
+- index.html: Defines the dashboard layout, stats cards, search/filter bar,
+  empty/loading/error states, card/table containers, and details modal.
+- students.json: Holds 18 structured student records.
+- assets/js/app.js: Uses $.ajax() to fetch students.json, computes stats,
+  renders recent & filtered students, debounces input (180 ms), highlights
+  matched text with <mark>, and handles the modal.
+
+PART 2 (Part_2_Backend):
+- config/database.php: Creates a singleton PDO connection with exception mode,
+  utf8mb4 charset, and native prepared statements (ATTR_EMULATE_PREPARES=false).
+- includes/helpers.php: Provides e() for XSS escaping, CSRF token generation/
+  verification, flash messages, base URL detection, and photo upload/delete.
+- includes/validation.php: Validates all 8 student fields and checks roll
+  number uniqueness in MySQL.
+- actions/store.php, update.php, destroy.php: Handle POST requests securely
+  with CSRF checks, validation, PDO queries, and file cleanup.
+- database.sql: Creates `student_management_db`, `students` table with PRIMARY
+  KEY and UNIQUE roll_number, and inserts 12 sample records.
+
+--------------------------------------------------------------------------------
+SECTION C: IMPORTANT SQL QUERIES EXPLAINED
+--------------------------------------------------------------------------------
+
+1. Dynamic Dashboard Count:
+   SELECT COUNT(*) FROM students;
+   -> Counts total rows in the students table.
+
+2. Unique Roll Number Check (on Edit):
+   SELECT id FROM students WHERE roll_number = :roll AND id != :id LIMIT 1;
+   -> Ensures no *other* student already uses that roll number.
+
+3. Search + Filter + Pagination:
+   SELECT id, full_name, ... FROM students
+   WHERE (full_name LIKE :search_name OR roll_number LIKE :search_roll ...)
+     AND course = :course
+   ORDER BY id DESC LIMIT :limit OFFSET :offset;
+   -> Filters safely with bound parameters and returns one page of results.
+
+4. Insert Student:
+   INSERT INTO students (full_name, roll_number, ...) VALUES (:full_name, ...);
+   -> Inserts a validated student record using named placeholders.
+
+5. Delete Student:
+   DELETE FROM students WHERE id = :id;
+   -> Removes the target row; PHP then calls delete_student_photo() to remove
+      the image file from disk.
+
+--------------------------------------------------------------------------------
+SECTION D: LIKELY VIVA QUESTIONS & SHORT ANSWERS
+--------------------------------------------------------------------------------
+
+Q1: Why can't we just open Part 1 index.html by double-clicking it (file://)?
+A1: Modern browsers block AJAX requests to local files (file://) due to CORS
+    security rules. Serving it over http://localhost/ allows AJAX to succeed.
+
+Q2: Why did you use debouncing on the search input?
+A2: Debouncing waits 180 ms after the user stops typing before filtering and
+    re-rendering the DOM, which avoids unnecessary repeated work on every keystroke.
+
+Q3: What is the difference between $.ajax() and $.getJSON()?
+A3: $.getJSON() is a shorthand for $.ajax() with method GET and dataType json.
+    $.ajax() gives finer control over callbacks like beforeSend and complete.
+
+Q4: Why use PDO instead of older mysql_* functions?
+A4: mysql_* was removed in PHP 7. PDO is modern, supports multiple databases,
+    throws exceptions on errors, and cleanly supports prepared statements.
+
+Q5: How do you prevent SQL Injection in Part 2?
+A5: Every query accepting user input uses PDO prepared statements with bound
+    parameters (:placeholder) and ATTR_EMULATE_PREPARES set to false.
+
+Q6: How do you prevent XSS (Cross-Site Scripting)?
+A6: In Part 1, escapeHtml() escapes <, >, &, ", and ' before inserting JSON
+    values into the DOM. In Part 2, all PHP output uses e() (htmlspecialchars).
+
+Q7: Why do you check MIME type with finfo_file() instead of only checking the
+    file extension?
+A7: An attacker can rename a PHP script to shell.jpg. Checking the actual file
+    bytes with finfo_file() verifies it is genuinely a JPEG, PNG, or WEBP image.
+
+Q8: What happens to the old photo when a student's photo is replaced or deleted?
+A8: On update, if a new photo is uploaded and DB update succeeds, the old file
+    is deleted with unlink(). On student deletion, the associated photo is also
+    deleted from uploads/students/.
+
+Q9: Why do you use CSRF tokens on POST forms?
+A9: A CSRF token ensures that form submissions (Add, Edit, Delete) originate
+    from our own application session and not from a malicious third-party site.
+
+Q10: Why is server-side validation necessary if HTML5 `required` is used?
+A10: HTML5 and JavaScript validation run in the browser and can be bypassed
+     easily using DevTools or curl. Server-side PHP validation is authoritative.
+================================================================================

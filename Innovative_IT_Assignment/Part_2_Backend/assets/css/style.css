@@ -1,0 +1,340 @@
+:root {
+  --sidebar-width: 248px;
+  --primary: #171717;
+  --on-primary: #ffffff;
+  --ink: #171717;
+  --body: #4d4d4d;
+  --mute: #8f8f8f;
+  --hairline: #ebebeb;
+  --hairline-soft: #f2f2f2;
+  --canvas: #fafafa;
+  --canvas-elevated: #ffffff;
+  --link: #0070f3;
+  --font-sans: "Geist", "Inter", Arial, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+body {
+  background-color: var(--canvas);
+  font-family: var(--font-sans);
+  color: var(--ink);
+  font-size: 14px;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+code {
+  font-family: var(--font-mono);
+  color: var(--ink);
+  background: var(--hairline-soft);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar (Geist monochrome light-hairline) */
+.sidebar {
+  width: var(--sidebar-width);
+  background: var(--canvas-elevated);
+  color: var(--ink);
+  border-right: 1px solid var(--hairline);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  z-index: 1040;
+  transition: transform 0.2s ease;
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.sidebar-brand .text-white {
+  color: var(--ink) !important;
+}
+
+.sidebar-brand .text-white-50 {
+  color: var(--mute) !important;
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.sidebar-logo {
+  width: 34px;
+  height: 34px;
+  border-radius: 6px;
+  background: var(--primary);
+  color: var(--on-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+}
+
+.sidebar-nav {
+  padding: 14px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 6px;
+  color: var(--body);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 14px;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.sidebar-link:hover {
+  background: var(--hairline-soft);
+  color: var(--ink);
+}
+
+.sidebar-link.active {
+  background: var(--primary);
+  color: var(--on-primary);
+}
+
+.sidebar-footer {
+  padding: 14px 20px;
+  border-top: 1px solid var(--hairline);
+}
+
+.sidebar-footer .text-white {
+  color: var(--ink) !important;
+}
+
+.sidebar-footer .text-white-50 {
+  color: var(--mute) !important;
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+/* Main Area */
+.app-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  background: rgba(250, 250, 250, 0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--hairline);
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 1020;
+}
+
+.topbar-title {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.4px;
+  color: var(--ink);
+}
+
+.content-area {
+  padding: 24px;
+  flex: 1;
+}
+
+.app-footer {
+  background: var(--canvas);
+  border-top: 1px solid var(--hairline);
+  padding: 14px 24px;
+  font-size: 13px;
+  color: var(--mute);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Geist Buttons & Cards Overrides */
+.btn {
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  border-color: var(--primary);
+  color: var(--on-primary);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: #2e2e2e;
+  border-color: #2e2e2e;
+}
+
+.btn-outline-primary {
+  color: var(--ink);
+  border-color: var(--hairline);
+  background: var(--canvas-elevated);
+}
+
+.btn-outline-primary:hover {
+  background: var(--hairline-soft);
+  border-color: #d4d4d4;
+  color: var(--ink);
+}
+
+.btn-outline-secondary {
+  color: var(--body);
+  border-color: var(--hairline);
+  background: var(--canvas-elevated);
+}
+
+.btn-outline-secondary:hover {
+  background: var(--hairline-soft);
+  border-color: #d4d4d4;
+  color: var(--ink);
+}
+
+.form-control,
+.form-select {
+  border-radius: 6px;
+  border-color: var(--hairline);
+  font-size: 14px;
+  color: var(--ink);
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--ink);
+  box-shadow: none;
+}
+
+.card,
+.stat-card-bs {
+  background: var(--canvas-elevated);
+  border: 1px solid var(--hairline);
+  border-radius: 12px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.stat-card-bs {
+  padding: 20px;
+}
+
+.card-header {
+  border-bottom-color: var(--hairline);
+}
+
+.card-footer {
+  border-top-color: var(--hairline);
+}
+
+.stat-icon-box {
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  border: 1px solid var(--hairline);
+  background: var(--canvas) !important;
+  color: var(--ink) !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+}
+
+.progress-bar {
+  background-color: var(--ink) !important;
+}
+
+.student-thumb {
+  width: 40px;
+  height: 40px;
+  border-radius: 9999px;
+  object-fit: cover;
+  border: 1px solid var(--hairline);
+}
+
+.student-initials {
+  width: 40px;
+  height: 40px;
+  border-radius: 9999px;
+  background: var(--hairline-soft);
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--hairline);
+  flex-shrink: 0;
+}
+
+.student-photo-lg {
+  width: 112px;
+  height: 112px;
+  border-radius: 12px;
+  object-fit: cover;
+  border: 1px solid var(--hairline);
+}
+
+.student-initials-lg {
+  width: 112px;
+  height: 112px;
+  border-radius: 12px;
+  background: var(--hairline-soft);
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--hairline);
+}
+
+.sidebar-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(23, 23, 23, 0.35);
+  z-index: 1035;
+}
+
+@media (max-width: 991.98px) {
+  .sidebar {
+    position: fixed;
+    left: 0;
+    transform: translateX(-100%);
+  }
+  .sidebar.show {
+    transform: translateX(0);
+  }
+  .sidebar-backdrop.show {
+    display: block;
+  }
+  .content-area {
+    padding: 16px;
+  }
+}

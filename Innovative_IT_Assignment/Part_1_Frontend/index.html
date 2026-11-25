@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Student Directory | AJAX Live Search</title>
+  <link rel="icon" href="data:,">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <!-- Top Navigation -->
+  <header class="navbar">
+    <div class="container navbar-inner">
+      <a href="#dashboard" class="brand">
+        <span class="brand-logo" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2L2 20h20L12 2z"/>
+          </svg>
+        </span>
+        <span class="brand-text">
+          <strong>Smart Student Directory</strong>
+          <small>ACADEMIC PORTAL</small>
+        </span>
+      </a>
+
+      <button class="nav-toggle" id="navToggle" type="button" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+
+      <nav class="nav-menu" id="navMenu" aria-label="Main navigation">
+        <a href="#dashboard" class="nav-link active">Dashboard</a>
+        <a href="#recent" class="nav-link">Recent</a>
+        <a href="#directory" class="nav-link">Directory</a>
+        <span class="nav-badge" id="dataStatusBadge">AJAX Ready</span>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Band with Confined Multi-Stop Mesh Gradient -->
+  <section id="dashboard" class="hero-band">
+    <div class="hero-mesh" aria-hidden="true"></div>
+    <div class="container hero-inner">
+      <div class="hero-copy">
+        <span class="mono-eyebrow">PART 01 &middot; FRONTEND AJAX &amp; JSON SYSTEM</span>
+        <h1>Explore student records with instant live search.</h1>
+        <p>Search by student name, roll number, or course in real time without reloading the page. Built with jQuery AJAX and structured JSON data.</p>
+        <div class="hero-actions">
+          <a href="#directory" class="btn-pill btn-pill-primary">Browse Directory</a>
+          <button type="button" id="refreshDataBtn" class="btn-pill btn-pill-secondary">Reload JSON</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <main class="container main-content">
+    <!-- Statistics Grid -->
+    <section class="stats-section" aria-label="Directory statistics">
+      <div class="stats-grid">
+        <article class="stat-card">
+          <span class="mono-eyebrow">TOTAL STUDENTS</span>
+          <p class="stat-value" id="statTotalStudents">--</p>
+          <span class="stat-caption">Active JSON records</span>
+        </article>
+
+        <article class="stat-card">
+          <span class="mono-eyebrow">COURSES</span>
+          <p class="stat-value" id="statTotalCourses">--</p>
+          <span class="stat-caption">Distinct degree tracks</span>
+        </article>
+
+        <article class="stat-card">
+          <span class="mono-eyebrow">MATCHING RESULTS</span>
+          <p class="stat-value" id="statMatchingResults">--</p>
+          <span class="stat-caption">Filtered live via AJAX</span>
+        </article>
+
+        <article class="stat-card">
+          <span class="mono-eyebrow">LATEST ENROLLMENT</span>
+          <p class="stat-value stat-value-sm" id="statLatestEnrollment">--</p>
+          <span class="stat-caption">Most recent admission</span>
+        </article>
+      </div>
+    </section>
+
+    <!-- Recently Added Students -->
+    <section id="recent" class="section-block">
+      <div class="section-header">
+        <div>
+          <span class="mono-eyebrow">RECENT ADMISSIONS</span>
+          <h2>Recently Enrolled Students</h2>
+          <p class="section-subtitle">Newest admissions sorted by enrollment date.</p>
+        </div>
+      </div>
+      <div class="recent-grid" id="recentStudentsGrid">
+        <!-- Populated dynamically via jQuery -->
+      </div>
+    </section>
+
+    <!-- Search & Filter Section -->
+    <section id="directory" class="section-block">
+      <div class="section-header">
+        <div>
+          <span class="mono-eyebrow">LIVE DIRECTORY</span>
+          <h2>Student Directory</h2>
+          <p class="section-subtitle" id="resultsSummary">Loading student records...</p>
+        </div>
+        <div class="view-toggle" role="group" aria-label="View mode">
+          <button type="button" class="view-btn active" data-view="cards" id="btnCardView">Cards</button>
+          <button type="button" class="view-btn" data-view="table" id="btnTableView">Table</button>
+        </div>
+      </div>
+
+      <div class="search-panel">
+        <div class="search-input-wrap">
+          <span class="search-icon" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+          </span>
+          <input
+            type="text"
+            id="searchInput"
+            class="search-input"
+            placeholder="Search by name, roll number, or course (e.g. Aarav, BCA2025001, MCA)..."
+            autocomplete="off"
+            aria-label="Search students"
+          >
+          <button type="button" id="clearSearchBtn" class="clear-btn" title="Clear search" aria-label="Clear search" hidden>
+            &times;
+          </button>
+        </div>
+
+        <div class="filter-controls">
+          <label for="courseFilter" class="sr-only">Filter by course</label>
+          <select id="courseFilter" class="course-select" aria-label="Filter by course">
+            <option value="all">All Courses</option>
+          </select>
+          <button type="button" id="resetAllBtn" class="btn-app btn-app-ghost">Reset</button>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div id="loadingState" class="state-box" hidden>
+        <div class="spinner" aria-hidden="true"></div>
+        <h3>Loading Student Directory...</h3>
+        <p>Fetching records asynchronously from <code>students.json</code>.</p>
+      </div>
+
+      <!-- Error State -->
+      <div id="errorState" class="state-box state-error" hidden>
+        <div class="state-icon">!</div>
+        <h3>Unable to Load Student Data</h3>
+        <p id="errorMessage">An error occurred while fetching students.json.</p>
+        <button type="button" id="retryLoadBtn" class="btn-app btn-app-primary">Retry AJAX Request</button>
+      </div>
+
+      <!-- Empty / No Results State -->
+      <div id="emptyState" class="state-box" hidden>
+        <div class="state-icon">?</div>
+        <h3>No Matching Students Found</h3>
+        <p id="emptyMessage">Try adjusting your search query or selecting a different course filter.</p>
+        <button type="button" id="emptyResetBtn" class="btn-app btn-app-ghost">Clear Search &amp; Filters</button>
+      </div>
+
+      <!-- Results: Card View -->
+      <div id="studentCardsContainer" class="cards-grid"></div>
+
+      <!-- Results: Table View -->
+      <div id="studentTableContainer" class="table-wrap" hidden>
+        <table class="student-table">
+          <thead>
+            <tr>
+              <th>Student</th>
+              <th>Roll Number</th>
+              <th>Course</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Enrolled</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="studentTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- Student Details Modal -->
+  <div class="modal-backdrop" id="studentModal" role="dialog" aria-modal="true" aria-labelledby="modalStudentName" hidden>
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Student Profile</h3>
+        <button type="button" class="modal-close" id="closeModalBtn" aria-label="Close modal">&times;</button>
+      </div>
+      <div class="modal-body" id="modalBody">
+        <!-- Populated dynamically -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-app btn-app-ghost" id="closeModalFooterBtn">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <span>Smart Student Directory &mdash; Web Technology &amp; Server-Side Scripting</span>
+      <span>Data Source: <code>students.json</code> via jQuery AJAX</span>
+    </div>
+  </footer>
+
+  <script src="assets/js/jquery-3.7.1.min.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

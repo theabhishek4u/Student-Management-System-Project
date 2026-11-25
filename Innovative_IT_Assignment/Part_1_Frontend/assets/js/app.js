@@ -607,6 +607,15 @@ $(document).ready(function () {
   });
 
   $("#openRegisterBtn, #heroRegisterBtn").on("click", openRegisterModal);
+  $("#navSearchBtn").on("click", function () {
+    $("#navMenu").removeClass("is-open");
+    $("#navToggle").attr("aria-expanded", "false");
+    var el = document.getElementById("directory");
+    if (el) el.scrollIntoView({ behavior: "smooth" });
+    setTimeout(function () {
+      $searchInput.focus();
+    }, 250);
+  });
   $("#closeRegisterModalBtn, #cancelRegisterBtn").on("click", closeRegisterModal);
   $("#registerModal").on("click", function (e) {
     if (e.target === this) closeRegisterModal();

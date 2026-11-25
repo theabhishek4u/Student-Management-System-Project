@@ -42,8 +42,8 @@ $flash = get_flash();
           <span class="topbar-status-pill d-none d-md-inline-flex">
             <span class="status-dot"></span>MySQL PDO
           </span>
-          <a href="<?= e(url('students/index.php')) ?>" class="btn btn-outline-secondary btn-sm d-none d-sm-inline-flex">
-            All Students
+          <a href="<?= e(url('students/index.php')) ?>" class="btn btn-outline-secondary btn-sm d-none d-sm-inline-flex align-items-center gap-1">
+            <i class="bi bi-search"></i>Search
           </a>
           <a href="<?= e(url('students/add.php')) ?>" class="btn btn-primary btn-sm">
             <i class="bi bi-plus-lg me-1"></i>Add Student

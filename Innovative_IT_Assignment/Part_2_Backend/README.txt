@@ -6,10 +6,10 @@ SMART STUDENT MANAGEMENT SYSTEM - PHP & MYSQL CRUD (PART 2 - BACKEND)
    Smart Student Management System - PHP and MySQL CRUD Application
 
 2. STUDENT NAME
-   [Your Full Name]
+   Abhishek Kumar
 
 3. ROLL NUMBER
-   [Your Roll Number]
+   202610101050043 (MCA)
 
 4. PROJECT INTRODUCTION
    Smart Student Management System is a full-stack, database-driven web

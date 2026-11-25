@@ -6,10 +6,10 @@ SMART STUDENT DIRECTORY - AJAX LIVE SEARCH SYSTEM (PART 1 - FRONTEND)
    Smart Student Directory - AJAX Live Search System
 
 2. STUDENT NAME
-   [Your Full Name]
+   Abhishek Kumar
 
 3. ROLL NUMBER
-   [Your Roll Number]
+   202610101050043 (MCA)
 
 4. PROJECT INTRODUCTION
    Smart Student Directory is a responsive frontend web application built for

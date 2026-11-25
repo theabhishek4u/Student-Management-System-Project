@@ -6,10 +6,10 @@
       </main>
 
       <footer class="app-footer">
-        <div class="d-flex align-items-center gap-2">
+        <div class="d-flex align-items-center gap-2 flex-wrap">
           <span class="fw-semibold text-dark">Smart SMS</span>
           <span>&middot;</span>
-          <span>PHP &amp; MySQL (PDO) CRUD System</span>
+          <span>Created by <strong>Abhishek Kumar</strong> (MCA, Roll No: <code>202610101050043</code>)</span>
         </div>
         <div class="d-flex align-items-center gap-3">
           <a href="<?= e(url('index.php')) ?>" class="footer-nav-link">Dashboard</a>

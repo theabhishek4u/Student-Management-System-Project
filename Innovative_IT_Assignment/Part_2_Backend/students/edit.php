@@ -136,7 +136,7 @@ include __DIR__ . '/../includes/header.php';
               <?php endif; ?>
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-3">
               <label for="date_of_birth" class="form-label fw-medium">Date of Birth *</label>
               <input
                 type="date"
@@ -148,6 +148,24 @@ include __DIR__ . '/../includes/header.php';
               >
               <?php if (isset($errors['date_of_birth'])): ?>
                 <div class="invalid-feedback"><?= e($errors['date_of_birth']) ?></div>
+              <?php endif; ?>
+            </div>
+
+            <div class="col-md-3">
+              <label for="cgpa" class="form-label fw-medium">CGPA (0 - 10) *</label>
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                max="10"
+                id="cgpa"
+                name="cgpa"
+                class="form-control <?= isset($errors['cgpa']) ? 'is-invalid' : '' ?>"
+                value="<?= e((string) ($old['cgpa'] ?? '')) ?>"
+                required
+              >
+              <?php if (isset($errors['cgpa'])): ?>
+                <div class="invalid-feedback"><?= e($errors['cgpa']) ?></div>
               <?php endif; ?>
             </div>
 

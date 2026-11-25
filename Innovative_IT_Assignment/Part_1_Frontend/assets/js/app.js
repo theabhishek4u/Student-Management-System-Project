@@ -355,6 +355,10 @@ $(document).ready(function () {
               '<span class="student-meta-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>' +
               '<span class="student-meta-text">' + escapeHtml(student.phone) + '</span>' +
             '</div>' +
+            '<div class="student-meta-item">' +
+              '<span class="student-meta-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>' +
+              '<span class="student-meta-text">CGPA: <strong>' + escapeHtml(student.cgpa || "N/A") + '</strong> / 10</span>' +
+            '</div>' +
           '</div>' +
           '<div class="student-card-footer">' +
             '<span class="student-enrolled">' +
@@ -374,6 +378,7 @@ $(document).ready(function () {
           '</div></td>' +
           '<td>' + highlightedRoll + '</td>' +
           '<td><span class="course-pill">' + highlightedCourse + '</span></td>' +
+          '<td><strong>' + escapeHtml(student.cgpa || "N/A") + '</strong></td>' +
           '<td>' + escapeHtml(student.email) + '</td>' +
           '<td>' + escapeHtml(student.phone) + '</td>' +
           '<td>' + escapeHtml(student.enrollment_date) + '</td>' +
@@ -409,6 +414,7 @@ $(document).ready(function () {
         '<div class="modal-detail-item"><label>Email</label><span>' + escapeHtml(student.email) + '</span></div>' +
         '<div class="modal-detail-item"><label>Phone</label><span>' + escapeHtml(student.phone) + '</span></div>' +
         '<div class="modal-detail-item"><label>Course</label><span>' + escapeHtml(student.course) + '</span></div>' +
+        '<div class="modal-detail-item"><label>CGPA</label><span>' + escapeHtml(student.cgpa || "N/A") + ' / 10</span></div>' +
         '<div class="modal-detail-item"><label>Enrollment Date</label><span>' + escapeHtml(student.enrollment_date) + '</span></div>' +
       '</div>';
 
@@ -449,6 +455,8 @@ $(document).ready(function () {
     var phone = $.trim($("#regPhone").val());
     var course = $("#regCourse").val();
     var enrollDate = $("#regDate").val();
+    var cgpaRaw = $.trim($("#regCgpa").val());
+    var cgpaNum = parseFloat(cgpaRaw);
 
     var hasError = false;
 
@@ -498,6 +506,12 @@ $(document).ready(function () {
       hasError = true;
     }
 
+    if (cgpaRaw === "" || isNaN(cgpaNum) || cgpaNum < 0 || cgpaNum > 10) {
+      $("#errRegCgpa").text("Enter a valid CGPA between 0.00 and 10.00.");
+      $("#regCgpa").addClass("is-invalid");
+      hasError = true;
+    }
+
     if (hasError) {
       $("#registerFormAlert").text("Please fix the highlighted fields before submitting.").prop("hidden", false);
       return;
@@ -515,6 +529,7 @@ $(document).ready(function () {
       email: email,
       phone: phone,
       course: course,
+      cgpa: cgpaNum.toFixed(2),
       profile_image: generateAvatarDataUri(name),
       enrollment_date: enrollDate
     };

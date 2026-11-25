@@ -63,6 +63,7 @@ try {
                 phone = :phone,
                 gender = :gender,
                 course = :course,
+                cgpa = :cgpa,
                 date_of_birth = :date_of_birth,
                 address = :address,
                 profile_photo = :profile_photo
@@ -75,6 +76,7 @@ try {
         ':phone'         => $cleanData['phone'],
         ':gender'        => $cleanData['gender'],
         ':course'        => $cleanData['course'],
+        ':cgpa'          => $cleanData['cgpa'],
         ':date_of_birth' => $cleanData['date_of_birth'],
         ':address'       => $cleanData['address'],
         ':profile_photo' => $finalPhoto,

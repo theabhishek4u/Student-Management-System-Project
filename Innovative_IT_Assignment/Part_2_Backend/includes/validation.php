@@ -19,6 +19,7 @@ function validate_student_input(PDO $pdo, array $input, ?int $excludeId = null):
     $phone       = trim((string) ($input['phone'] ?? ''));
     $gender      = trim((string) ($input['gender'] ?? ''));
     $course      = trim((string) ($input['course'] ?? ''));
+    $cgpaRaw     = trim((string) ($input['cgpa'] ?? ''));
     $dateOfBirth = trim((string) ($input['date_of_birth'] ?? ''));
     $address     = trim((string) ($input['address'] ?? ''));
 
@@ -72,6 +73,12 @@ function validate_student_input(PDO $pdo, array $input, ?int $excludeId = null):
         $errors['course'] = 'Please select a valid course.';
     }
 
+    // CGPA
+    if ($cgpaRaw === '' || !is_numeric($cgpaRaw) || (float) $cgpaRaw < 0 || (float) $cgpaRaw > 10) {
+        $errors['cgpa'] = 'Please enter a valid CGPA between 0.00 and 10.00.';
+    }
+    $cgpa = is_numeric($cgpaRaw) ? number_format((float) $cgpaRaw, 2, '.', '') : '0.00';
+
     // Date of Birth
     if ($dateOfBirth === '') {
         $errors['date_of_birth'] = 'Date of birth is required.';
@@ -107,6 +114,7 @@ function validate_student_input(PDO $pdo, array $input, ?int $excludeId = null):
         'phone'         => $phone,
         'gender'        => $gender,
         'course'        => $course,
+        'cgpa'          => $cgpa,
         'date_of_birth' => $dateOfBirth,
         'address'       => $address,
     ];

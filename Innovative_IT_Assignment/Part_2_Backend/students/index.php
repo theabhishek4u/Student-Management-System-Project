@@ -44,7 +44,7 @@ if ($page > $totalPages) {
 $offset = ($page - 1) * $perPage;
 
 // Fetch paginated records
-$listSql = "SELECT id, full_name, roll_number, email, phone, course, profile_photo, created_at
+$listSql = "SELECT id, full_name, roll_number, email, phone, course, cgpa, profile_photo, created_at
             FROM students
             {$whereSql}
             ORDER BY id DESC
@@ -124,6 +124,7 @@ include __DIR__ . '/../includes/header.php';
             <th>Email</th>
             <th>Phone</th>
             <th>Course</th>
+            <th>CGPA</th>
             <th class="text-end">Actions</th>
           </tr>
         </thead>
@@ -149,6 +150,7 @@ include __DIR__ . '/../includes/header.php';
               <td><?= e($student['email']) ?></td>
               <td><?= e($student['phone']) ?></td>
               <td><span class="badge text-bg-primary-subtle text-primary border border-primary-subtle"><?= e($student['course']) ?></span></td>
+              <td class="fw-semibold"><?= e(number_format((float) ($student['cgpa'] ?? 0), 2)) ?></td>
               <td class="text-end text-nowrap">
                 <a href="<?= e(url('students/view.php?id=' . (int) $student['id'])) ?>" class="btn btn-sm btn-outline-secondary" title="View">
                   <i class="bi bi-eye"></i>

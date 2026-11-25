@@ -83,6 +83,9 @@ include __DIR__ . '/../includes/header.php';
                 <dt class="col-sm-5 text-muted">Course</dt>
                 <dd class="col-sm-7"><?= e($student['course']) ?></dd>
 
+                <dt class="col-sm-5 text-muted">CGPA</dt>
+                <dd class="col-sm-7 fw-semibold"><?= e(number_format((float) ($student['cgpa'] ?? 0), 2)) ?> / 10</dd>
+
                 <dt class="col-sm-5 text-muted">Gender</dt>
                 <dd class="col-sm-7"><?= e($student['gender']) ?></dd>
 

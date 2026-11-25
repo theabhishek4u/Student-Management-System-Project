@@ -192,6 +192,7 @@
               <th>Student</th>
               <th>Roll Number</th>
               <th>Course</th>
+              <th>CGPA</th>
               <th>Email</th>
               <th>Phone</th>
               <th>Enrolled</th>
@@ -269,6 +270,11 @@
               <label for="regDate">Enrollment Date *</label>
               <input type="date" id="regDate" class="form-input" required>
               <small class="field-error" id="errRegDate"></small>
+            </div>
+            <div class="form-field">
+              <label for="regCgpa">CGPA (0.00 - 10.00) *</label>
+              <input type="number" id="regCgpa" class="form-input" step="0.01" min="0" max="10" placeholder="e.g. 8.75" required>
+              <small class="field-error" id="errRegCgpa"></small>
             </div>
           </div>
         </div>

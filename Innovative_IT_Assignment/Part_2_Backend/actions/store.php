@@ -41,9 +41,9 @@ if (!empty($errors)) {
 
 try {
     $sql = 'INSERT INTO students
-            (full_name, roll_number, email, phone, gender, course, date_of_birth, address, profile_photo)
+            (full_name, roll_number, email, phone, gender, course, cgpa, date_of_birth, address, profile_photo)
             VALUES
-            (:full_name, :roll_number, :email, :phone, :gender, :course, :date_of_birth, :address, :profile_photo)';
+            (:full_name, :roll_number, :email, :phone, :gender, :course, :cgpa, :date_of_birth, :address, :profile_photo)';
     $stmt = $pdo->prepare($sql);
     $stmt->execute([
         ':full_name'     => $cleanData['full_name'],
@@ -52,6 +52,7 @@ try {
         ':phone'         => $cleanData['phone'],
         ':gender'        => $cleanData['gender'],
         ':course'        => $cleanData['course'],
+        ':cgpa'          => $cleanData['cgpa'],
         ':date_of_birth' => $cleanData['date_of_birth'],
         ':address'       => $cleanData['address'],
         ':profile_photo' => $uploadedPhoto,

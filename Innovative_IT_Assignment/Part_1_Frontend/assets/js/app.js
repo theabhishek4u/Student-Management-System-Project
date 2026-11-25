@@ -594,6 +594,9 @@ $(document).ready(function () {
 
   $("#refreshDataBtn, #retryLoadBtn").on("click", function () {
     if (window.location.search.indexOf("simulate_error=1") !== -1) {
+      if (window.history && window.history.replaceState) {
+        window.history.replaceState({}, "", window.location.pathname + window.location.hash);
+      }
       $.getJSON("students.json", function (data) {
         var customStudents = getCustomStudents();
         allStudents = customStudents.concat(data);

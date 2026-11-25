@@ -76,9 +76,9 @@
         </article>
 
         <article class="stat-card">
-          <span class="mono-eyebrow">LATEST ENROLLMENT</span>
-          <p class="stat-value stat-value-sm" id="statLatestEnrollment">--</p>
-          <span class="stat-caption">Most recent admission</span>
+          <span class="mono-eyebrow">AVERAGE CGPA</span>
+          <p class="stat-value" id="statAvgCgpa">--</p>
+          <span class="stat-caption" id="statTopCgpa">Highest: --</span>
         </article>
       </div>
     </section>
@@ -105,9 +105,19 @@
           <h2>Student Directory</h2>
           <p class="section-subtitle" id="resultsSummary">Loading student records...</p>
         </div>
-        <div class="view-toggle" role="group" aria-label="View mode">
-          <button type="button" class="view-btn active" data-view="cards" id="btnCardView">Cards</button>
-          <button type="button" class="view-btn" data-view="table" id="btnTableView">Table</button>
+        <div class="directory-toolbar-right">
+          <button type="button" id="exportCsvBtn" class="btn-app btn-sm" title="Export filtered students to CSV">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Export CSV
+          </button>
+          <div class="view-toggle" role="group" aria-label="View mode">
+            <button type="button" class="view-btn active" data-view="cards" id="btnCardView">Cards</button>
+            <button type="button" class="view-btn" data-view="table" id="btnTableView">Table</button>
+          </div>
         </div>
       </div>
 
@@ -124,10 +134,11 @@
               type="text"
               id="searchInput"
               class="search-input"
-              placeholder="Search by name, roll number, or course (e.g. Aarav, BCA2025001, MCA)..."
+              placeholder="Search by name, roll number, or course (Press / to focus)..."
               autocomplete="off"
               aria-label="Search students"
             >
+            <kbd class="search-kbd" id="searchKbdHint">/</kbd>
             <button type="button" id="clearSearchBtn" class="clear-btn" title="Clear search" aria-label="Clear search" hidden>
               &times;
             </button>
@@ -137,6 +148,22 @@
             <label for="courseFilter" class="sr-only">Filter by course</label>
             <select id="courseFilter" class="course-select" aria-label="Filter by course">
               <option value="all">All Courses</option>
+            </select>
+            <label for="sortSelect" class="sr-only">Sort students</label>
+            <select id="sortSelect" class="course-select" aria-label="Sort students">
+              <option value="default">Sort: Default</option>
+              <option value="cgpa_desc">CGPA: High &rarr; Low</option>
+              <option value="cgpa_asc">CGPA: Low &rarr; High</option>
+              <option value="name_asc">Name: A &rarr; Z</option>
+              <option value="name_desc">Name: Z &rarr; A</option>
+              <option value="roll_asc">Roll No: A &rarr; Z</option>
+            </select>
+            <label for="pageSizeSelect" class="sr-only">Items per page</label>
+            <select id="pageSizeSelect" class="course-select" aria-label="Items per page">
+              <option value="all">Show: All</option>
+              <option value="6">6 / page</option>
+              <option value="9">9 / page</option>
+              <option value="12">12 / page</option>
             </select>
             <button type="button" id="resetAllBtn" class="btn-app btn-app-ghost">Reset</button>
           </div>
@@ -192,6 +219,9 @@
           <tbody id="studentTableBody"></tbody>
         </table>
       </div>
+
+      <!-- Pagination Bar -->
+      <div id="paginationBar" class="pagination-bar" hidden></div>
     </section>
 
     <!-- Activity Log Section -->

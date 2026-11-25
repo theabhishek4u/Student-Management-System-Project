@@ -8,13 +8,19 @@ $(document).ready(function () {
   var STORAGE_LOG_KEY = "ssd_activity_log_v1";
 
   var allStudents = [];
+  var currentFiltered = [];
   var activityLogs = [];
   var currentView = "cards";
+  var currentPage = 1;
   var searchTimer = null;
 
   var $searchInput = $("#searchInput");
   var $clearSearchBtn = $("#clearSearchBtn");
+  var $searchKbdHint = $("#searchKbdHint");
   var $courseFilter = $("#courseFilter");
+  var $sortSelect = $("#sortSelect");
+  var $pageSizeSelect = $("#pageSizeSelect");
+  var $paginationBar = $("#paginationBar");
   var $cardsContainer = $("#studentCardsContainer");
   var $tableContainer = $("#studentTableContainer");
   var $tableBody = $("#studentTableBody");
@@ -243,21 +249,27 @@ $(document).ready(function () {
 
   function updateDashboardStats(students, filtered) {
     var uniqueCourses = [];
-    var latestDate = "";
+    var totalCgpa = 0;
+    var cgpaCount = 0;
+    var topCgpa = 0;
 
     $.each(students, function (_, s) {
       if (s.course && uniqueCourses.indexOf(s.course) === -1) {
         uniqueCourses.push(s.course);
       }
-      if (s.enrollment_date && s.enrollment_date > latestDate) {
-        latestDate = s.enrollment_date;
+      var val = parseFloat(s.cgpa);
+      if (!isNaN(val)) {
+        totalCgpa += val;
+        cgpaCount++;
+        if (val > topCgpa) topCgpa = val;
       }
     });
 
     $("#statTotalStudents").text(students.length);
     $("#statTotalCourses").text(uniqueCourses.length);
     $("#statMatchingResults").text(filtered.length);
-    $("#statLatestEnrollment").text(latestDate || "N/A");
+    $("#statAvgCgpa").text(cgpaCount ? (totalCgpa / cgpaCount).toFixed(2) : "N/A");
+    $("#statTopCgpa").text(cgpaCount ? "Highest: " + topCgpa.toFixed(2) + " / 10" : "No CGPA data");
   }
 
   function renderRecentStudents(students) {
@@ -281,12 +293,33 @@ $(document).ready(function () {
     });
   }
 
-  function applyFilters() {
+  function sortStudents(list, sortBy) {
+    var sorted = list.slice();
+    if (sortBy === "cgpa_desc") {
+      sorted.sort(function (a, b) { return (parseFloat(b.cgpa) || 0) - (parseFloat(a.cgpa) || 0); });
+    } else if (sortBy === "cgpa_asc") {
+      sorted.sort(function (a, b) { return (parseFloat(a.cgpa) || 0) - (parseFloat(b.cgpa) || 0); });
+    } else if (sortBy === "name_asc") {
+      sorted.sort(function (a, b) { return (a.name || "").localeCompare(b.name || ""); });
+    } else if (sortBy === "name_desc") {
+      sorted.sort(function (a, b) { return (b.name || "").localeCompare(a.name || ""); });
+    } else if (sortBy === "roll_asc") {
+      sorted.sort(function (a, b) { return (a.roll_number || "").localeCompare(b.roll_number || ""); });
+    }
+    return sorted;
+  }
+
+  function applyFilters(resetPage) {
+    if (resetPage !== false) {
+      currentPage = 1;
+    }
     var rawQuery = $.trim($searchInput.val());
     var query = rawQuery.toLowerCase();
     var selectedCourse = $courseFilter.val();
+    var sortBy = $sortSelect.val() || "default";
 
     $clearSearchBtn.prop("hidden", rawQuery.length === 0);
+    $searchKbdHint.prop("hidden", rawQuery.length > 0);
 
     var filtered = $.grep(allStudents, function (student) {
       var matchesCourse = selectedCourse === "all" || student.course === selectedCourse;
@@ -302,8 +335,33 @@ $(document).ready(function () {
       return nameMatch || rollMatch || courseMatch;
     });
 
-    updateDashboardStats(allStudents, filtered);
-    renderResults(filtered, rawQuery);
+    currentFiltered = sortStudents(filtered, sortBy);
+    updateDashboardStats(allStudents, currentFiltered);
+    renderResults(currentFiltered, rawQuery);
+  }
+
+  function renderPagination(totalItems, pageSize) {
+    if (pageSize === "all" || totalItems <= parseInt(pageSize, 10)) {
+      $paginationBar.prop("hidden", true).empty();
+      return;
+    }
+    var size = parseInt(pageSize, 10);
+    var totalPages = Math.max(1, Math.ceil(totalItems / size));
+    if (currentPage > totalPages) currentPage = totalPages;
+
+    var startIdx = (currentPage - 1) * size + 1;
+    var endIdx = Math.min(currentPage * size, totalItems);
+
+    var html = '<span class="stat-caption">Showing ' + startIdx + '&ndash;' + endIdx + ' of ' + totalItems + '</span>';
+    html += '<div class="pagination-pages">';
+    html += '<button type="button" class="page-btn" data-page="' + (currentPage - 1) + '"' + (currentPage === 1 ? ' disabled' : '') + '>Prev</button>';
+    for (var p = 1; p <= totalPages; p++) {
+      html += '<button type="button" class="page-btn' + (p === currentPage ? ' active' : '') + '" data-page="' + p + '">' + p + '</button>';
+    }
+    html += '<button type="button" class="page-btn" data-page="' + (currentPage + 1) + '"' + (currentPage === totalPages ? ' disabled' : '') + '>Next</button>';
+    html += '</div>';
+
+    $paginationBar.html(html).prop("hidden", false);
   }
 
   function renderResults(students, query) {
@@ -314,8 +372,19 @@ $(document).ready(function () {
       $emptyState.prop("hidden", false);
       $cardsContainer.prop("hidden", true);
       $tableContainer.prop("hidden", true);
+      $paginationBar.prop("hidden", true).empty();
       $resultsSummary.text("Showing 0 of " + allStudents.length + " students");
       return;
+    }
+
+    var pageSize = $pageSizeSelect.val() || "all";
+    renderPagination(students.length, pageSize);
+
+    var visibleStudents = students;
+    if (pageSize !== "all") {
+      var size = parseInt(pageSize, 10);
+      var offset = (currentPage - 1) * size;
+      visibleStudents = students.slice(offset, offset + size);
     }
 
     $emptyState.prop("hidden", true);
@@ -329,7 +398,7 @@ $(document).ready(function () {
       $tableContainer.prop("hidden", false);
     }
 
-    $.each(students, function (_, student) {
+    $.each(visibleStudents, function (_, student) {
       var highlightedName = highlightText(student.name, query);
       var highlightedRoll = highlightText(student.roll_number, query);
       var highlightedCourse = highlightText(student.course, query);
@@ -554,11 +623,52 @@ $(document).ready(function () {
   function resetAllFilters() {
     $searchInput.val("");
     $courseFilter.val("all");
+    $sortSelect.val("default");
+    $pageSizeSelect.val("all");
     syncCoursePills("all");
-    applyFilters();
+    applyFilters(true);
     $searchInput.focus();
-    addActivityLog("RESET", "Cleared search query and course filter.");
+    addActivityLog("RESET", "Cleared search query, sorting, and course filter.");
   }
+
+  $sortSelect.on("change", function () {
+    applyFilters(true);
+    addActivityLog("SORT", "Sorted directory: " + $sortSelect.find("option:selected").text() + ".");
+  });
+
+  $pageSizeSelect.on("change", function () {
+    applyFilters(true);
+  });
+
+  $(document).on("click", "#paginationBar .page-btn", function () {
+    var targetPage = parseInt($(this).data("page"), 10);
+    if (!isNaN(targetPage) && targetPage >= 1) {
+      currentPage = targetPage;
+      applyFilters(false);
+    }
+  });
+
+  $("#exportCsvBtn").on("click", function () {
+    if (!currentFiltered.length) return;
+    var headers = ["ID", "Name", "Roll Number", "Course", "CGPA", "Email", "Phone", "Enrollment Date"];
+    var rows = [headers.join(",")];
+    $.each(currentFiltered, function (_, s) {
+      var vals = [s.id, s.name, s.roll_number, s.course, s.cgpa || "", s.email, s.phone, s.enrollment_date].map(function (v) {
+        return '"' + String(v).replace(/"/g, '""') + '"';
+      });
+      rows.push(vals.join(","));
+    });
+    var blob = new Blob([rows.join("\n")], { type: "text/csv;charset=utf-8;" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = "students_export.csv";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    addActivityLog("EXPORT", "Exported " + currentFiltered.length + " student records to CSV.");
+  });
 
   // Event Handlers
   $searchInput.on("input", function () {
@@ -656,6 +766,9 @@ $(document).ready(function () {
     if (e.key === "Escape") {
       closeStudentModal();
       closeRegisterModal();
+    } else if (e.key === "/" && !$(e.target).is("input, textarea, select")) {
+      e.preventDefault();
+      $searchInput.focus();
     }
   });
 

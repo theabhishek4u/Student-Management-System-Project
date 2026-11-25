@@ -1227,7 +1227,7 @@ mark.search-highlight {
 
 .footer-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
+  grid-template-columns: 2fr 1fr;
   gap: 32px;
   padding-bottom: 32px;
   border-bottom: 1px solid var(--hairline);
